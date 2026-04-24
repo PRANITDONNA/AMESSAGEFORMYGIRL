@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Love Game 💖</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Comic Sans MS", cursive;
+  background: linear-gradient(135deg,#ffd6e0,#e0f7ff);
+  height:100vh;
+  overflow:hidden;
+}
+
+/* DARK LAYER */
+#darkLayer{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  opacity:0;
+  z-index:1;
+  pointer-events:none;
+  transition:0.4s;
+}
+
+/* CARD */
+.card{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  padding:25px;
+  border-radius:25px;
+  width:340px;
+  max-width:90%;
+  text-align:center;
+  z-index:2;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1{
+  font-size:20px;
+  color:#ff4d88;
+}
+
+.subtext{
+  font-size:12px;
+  color:#ff6fa5;
+}
+
+#display{
+  font-size:30px;
+  margin:10px;
+  color:#ff4d88;
+}
+
+/* KEYPAD */
+.keypad{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.key{
+  padding:14px;
+  border:none;
+  border-radius:15px;
+  background:#ffe3ec;
+  color:#ff4d88;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 4px 0 #ffb6c1;
+}
+
+.key:active{
+  transform:scale(0.9);
+}
+
+.ok{
+  background:#ff4d88;
+  color:white;
+}
+
+/* DOGS */
+.sideDog{
+  position:fixed;
+  top:50%;
+  transform:translateY(-50%);
+  width:120px;
+  display:none;
+  z-index:3;
+}
+
+#leftDog{ left:10px; }
+#rightDog{ right:10px; }
+
+.shake{
+  animation:shake 0.2s infinite;
+}
+
+@keyframes shake{
+  0%{transform:translateY(-50%) translateX(0);}
+  50%{transform:translateY(-50%) translateX(5px);}
+  100%{transform:translateY(-50%) translateX(-5px);}
+}
+
+/* FINAL SCREEN */
+.finalScreen{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:9999;
+  flex-direction:column;
+}
+
+/* LOVE BG */
+.love-bg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:
+    radial-gradient(circle,#ffb6c1 10%,transparent 10%),
+    radial-gradient(circle,#ffd6e0 10%,transparent 10%);
+  background-size:60px 60px;
+  opacity:0.3;
+}
+
+/* HEARTS */
+.heart{
+  position:absolute;
+  font-size:40px;
+  animation:floatUp 3s linear forwards;
+}
+
+@keyframes floatUp{
+  0%{transform:translateY(0);opacity:1;}
+  100%{transform:translateY(-600px);opacity:0;}
+}
+
+/* LOVE PAGE CARD */
+#loveCard button{
+  margin:10px;
+}
+
+/* MOBILE FIX */
+@media (max-width:600px){
+  .card{
+    width:90%;
+    padding:20px;
+  }
+
+  h1{
+    font-size:18px;
+  }
+
+  .subtext{
+    font-size:11px;
+  }
+
+  #display{
+    font-size:26px;
+  }
+
+  .key{
+    font-size:16px;
+    padding:12px;
+  }
+
+  .sideDog{
+    width:80px;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="darkLayer"></div>
+
+<img id="leftDog" class="sideDog" src="https://media.giphy.com/media/ROF8OQvDmxytW/giphy.gif">
+<img id="rightDog" class="sideDog" src="https://media.giphy.com/media/ROF8OQvDmxytW/giphy.gif">
+
+<div class="card">
+
+  <h1>HEHEH JUST A MESSAGE I WROTE FOR YOU 💖</h1>
+
+  <div class="subtext">
+    BEFORE WE PROCEED TO THE MESSAGEEE WRITEEE THEE BESTTT DATEEE OF HISSS LIFEEE
+  </div>
+
+  <div id="display">____</div>
+
+  <div class="keypad">
+    <button class="key" onclick="press(1)">1</button>
+    <button class="key" onclick="press(2)">2</button>
+    <button class="key" onclick="press(3)">3</button>
+    <button class="key" onclick="press(4)">4</button>
+    <button class="key" onclick="press(5)">5</button>
+    <button class="key" onclick="press(6)">6</button>
+    <button class="key" onclick="press(7)">7</button>
+    <button class="key" onclick="press(8)">8</button>
+    <button class="key" onclick="press(9)">9</button>
+    <button class="key" onclick="clearInput()">⌫</button>
+    <button class="key" onclick="press(0)">0</button>
+    <button class="key ok" onclick="check()">OK 💕</button>
+  </div>
+
+  <div id="reaction"></div>
+
+</div>
+
+<script>
+
+let input="";
+let wrong=0;
+
+const display=document.getElementById("display");
+const reaction=document.getElementById("reaction");
+const darkLayer=document.getElementById("darkLayer");
+
+const leftDog=document.getElementById("leftDog");
+const rightDog=document.getElementById("rightDog");
+
+function press(n){
+  if(input.length<4){
+    input+=n;
+    display.innerText=input;
+  }
+}
+
+function clearInput(){
+  input="";
+  display.innerText="____";
+}
+
+/* WRONG SYSTEM */
+function wrongFlow(){
+
+  wrong++;
+
+  clearInput();
+
+  darkLayer.style.opacity=Math.min(wrong*0.15,0.85);
+
+  leftDog.style.display="block";
+  rightDog.style.display="block";
+
+  leftDog.classList.add("shake");
+  rightDog.classList.add("shake");
+
+  const msgs=[
+    "You don't love me? 🥺",
+    "Think again... 😢",
+    "I will cryyyy 😭",
+    "Are you sure? 💔",
+    "I'm getting sad... 😞"
+  ];
+
+  reaction.innerText=msgs[Math.min(wrong-1,msgs.length-1)];
+
+  if(wrong>=6){
+    document.body.innerHTML=`
+      <div class="finalScreen">
+        <h1>FINEEEE WEEE WILL PROCEED ANYWAYYYYY🙄🙄</h1>
+      </div>
+    `;
+
+    setTimeout(loadLovePage,2000);
+  }
+}
+
+/* LOVE PAGE */
+function loadLovePage(){
+
+document.body.innerHTML=`
+<div class="love-bg"></div>
+
+<div class="card" id="loveCard">
+  <h1>BUT DO YOU LOVE MEEE? 💖</h1>
+
+  <button id="yesBtn" class="key ok">YES 💖</button>
+  <button id="noBtn" class="key">NO 😳</button>
+</div>
+`;
+
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+
+let noClicks=0;
+
+yesBtn.onclick=()=>{
+  showLoveCelebration();
+};
+
+noBtn.onclick=()=>{
+
+  noClicks++;
+
+  const card=document.getElementById("loveCard");
+  card.style.position="absolute";
+
+  noBtn.style.position="absolute";
+
+  const maxX=card.clientWidth - noBtn.offsetWidth;
+  const maxY=card.clientHeight - noBtn.offsetHeight;
+
+  noBtn.style.left=Math.random()*maxX+"px";
+  noBtn.style.top=Math.random()*maxY+"px";
+
+  if(noClicks>=5){
+    noBtn.innerText="YES 💖";
+    noBtn.onclick=()=>{
+      showLoveCelebration();
+    };
+  }
+};
+
+}
+
+/* CELEBRATION */
+function showLoveCelebration(){
+
+document.body.innerHTML=`
+<div style="
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  overflow:hidden;
+">
+
+  <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+       style="position:absolute;width:100%;height:100%;object-fit:cover;opacity:0.85;">
+
+  <h1 style="position:relative;color:white;text-shadow:0 0 10px pink;">
+    JEHEHEHHEHE BABBYYY I LOVE YOUUU 💖💖💖
+  </h1>
+
+</div>
+`;
+
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.innerHTML="💖";
+  h.style.position="fixed";
+  h.style.left=Math.random()*100+"vw";
+  h.style.top="100vh";
+  h.style.fontSize="30px";
+  h.style.animation="floatUp 3s linear forwards";
+  document.body.appendChild(h);
+
+  setTimeout(()=>h.remove(),3000);
+},200);
+
+setTimeout(()=>{
+  window.location.href="message.html";
+},3000);
+
+}
+
+/* CHECK CODE */
+function check(){
+  if(input==="0809"){
+    loadLovePage();
+  }else{
+    wrongFlow();
+  }
+}
+
+</script>
+
+</body>
+</html>
